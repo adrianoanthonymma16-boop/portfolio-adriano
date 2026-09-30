@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="light">
+    <meta name="color-scheme" content="dark">
     <meta name="description" content="Adriano Anthony — Engenharia de Software na Uninter, militar de Santarém (PA). Constrói ferramentas de transparência política com dados públicos do Congresso, e sites full-stack com Node.js, TypeScript e React.">
     <title>Adriano Anthony · Transparência política com dados públicos</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23eef0ff'/%3E%3Ctext x='50' y='50' dy='.35em' text-anchor='middle' font-family='Georgia,serif' font-size='58' fill='%235f6094'%3EA%3C/text%3E%3C/svg%3E">
@@ -27,27 +27,30 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
         <style>
         /* ============================================================
-           TOKENS — mesma paleta pastel do perfil do GitHub, em claro
+           TOKENS — escuro, ancorado em #0D1017 (fundo) e #777AAD (acento)
+           Toda a paleta abaixo foi medida contra AA (4.5:1).
            ============================================================ */
         :root {
-            --fundo: #f4f4fa;
-            --fundo-superficie: #ffffff;
-            --fundo-suave: #e9e7f7;
-            --fundo-hover: #dedbf4;
+            --fundo: #0D1017;
+            --fundo-superficie: #14181F;
+            --fundo-suave: #171C26;
+            --fundo-hover: #1E2430;
 
-            --borda: #dcd7f0;
-            --borda-forte: #c6c0e6;
+            --borda: #272E3B;
+            --borda-forte: #39414F;
 
-            /* acento: mesma família lilás do #7A7BB0 do GitHub, um passo
-               mais escuro — branco sobre ele dá 5.1:1 em vez de 3.97:1 */
-            --acento: #6567b5;
-            --acento-forte: #5456a2;
-            --acento-suave: #e6e8ff;
-            --acento-texto: #46488f;
+            /* acento: #777AAD. Branco sobre ele dá só 4.06:1, então o
+               texto que cai em cima do acento usa o próprio fundo
+               escuro: #0D1017 sobre #777AAD dá 4.69:1 */
+            --acento: #777AAD;
+            --acento-forte: #8F91BF;
+            --acento-suave: #1C2033;
+            --acento-texto: #9B9DD1;
+            --sobre-acento: #0D1017;
 
-            --texto: #1e1d28;
-            --texto-corpo: #3b3a4c;
-            --texto-suave: #62607a;
+            --texto: #EDEEF6;
+            --texto-corpo: #C4C7D6;
+            --texto-suave: #8F94A8;
 
             --fonte-titulo: 'Inter', 'Segoe UI', sans-serif;
             --fonte-corpo: 'Inter', 'Segoe UI', sans-serif;
@@ -116,7 +119,7 @@
             top: 0;
             z-index: 100;
             background: var(--acento);
-            color: #fff;
+            color: var(--sobre-acento);
             padding: 12px 20px;
             border-radius: 0 0 var(--raio-pequeno) 0;
             text-decoration: none;
@@ -246,14 +249,14 @@
            HERO
            ============================================================ */
         /* O maior bloco de cor da página: sem a faixa, o topo era
-           branco puro e a paleta toda parecia esmaecida. */
+           preto puro e a paleta toda parecia apagada. */
         .hero {
             margin-bottom: 72px;
             padding: 44px 40px 40px;
             border: 1px solid var(--borda);
             border-radius: var(--raio);
             background:
-                linear-gradient(135deg, var(--acento-suave) 0%, rgba(230, 232, 255, 0.35) 45%, transparent 75%);
+                linear-gradient(135deg, var(--acento-suave) 0%, rgba(119, 117, 173, 0.22) 45%, transparent 75%);
         }
 
         .hero-etiqueta {
@@ -319,7 +322,7 @@
 
         .btn-primaria {
             background: var(--acento);
-            color: #fff;
+            color: var(--sobre-acento);
         }
 
         .btn-primaria:hover {
@@ -444,7 +447,7 @@
 
         .selo:hover {
             background: var(--acento);
-            color: #fff;
+            color: var(--sobre-acento);
             border-color: var(--acento);
         }
 
