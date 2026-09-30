@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
     <meta name="description" content="Adriano Anthony — Engenharia de Software na Uninter, militar de Santarém (PA). Constrói ferramentas de transparência política com dados públicos do Congresso, e sites full-stack com Node.js, TypeScript e React.">
     <title>Adriano Anthony · Transparência política com dados públicos</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23eef0ff'/%3E%3Ctext x='50' y='50' dy='.35em' text-anchor='middle' font-family='Georgia,serif' font-size='58' fill='%235f6094'%3EA%3C/text%3E%3C/svg%3E">
@@ -14,23 +15,24 @@
            TOKENS — mesma paleta pastel do perfil do GitHub, em claro
            ============================================================ */
         :root {
-            --fundo: #fbfbfd;
+            --fundo: #f4f4fa;
             --fundo-superficie: #ffffff;
-            --fundo-suave: #f3f2f8;
-            --fundo-hover: #eeecf6;
+            --fundo-suave: #e9e7f7;
+            --fundo-hover: #dedbf4;
 
-            --borda: #e4e1ee;
-            --borda-forte: #d3cfe3;
+            --borda: #dcd7f0;
+            --borda-forte: #c6c0e6;
 
-            /* acento: lilás dessaturado, idêntico ao #7A7BB0 do GitHub */
-            --acento: #7a7bb0;
-            --acento-forte: #5f6094;
-            --acento-suave: #eef0ff;
-            --acento-texto: #4f507d;
+            /* acento: mesma família lilás do #7A7BB0 do GitHub, um passo
+               mais escuro — branco sobre ele dá 5.1:1 em vez de 3.97:1 */
+            --acento: #6567b5;
+            --acento-forte: #5456a2;
+            --acento-suave: #e6e8ff;
+            --acento-texto: #46488f;
 
             --texto: #1e1d28;
-            --texto-corpo: #4a4859;
-            --texto-suave: #6f6d80;
+            --texto-corpo: #3b3a4c;
+            --texto-suave: #62607a;
 
             --fonte-titulo: 'Inter', 'Segoe UI', sans-serif;
             --fonte-corpo: 'Inter', 'Segoe UI', sans-serif;
@@ -66,7 +68,12 @@
             }
         }
 
+        /* O layout inteiro é uma linha: barra fixa à esquerda, conteúdo
+           à direita. Sem flex, a barra (100vh) empurrava o conteúdo
+           para baixo e o sticky o cobria ao rolar. */
         body {
+            display: flex;
+            align-items: flex-start;
             min-height: 100vh;
             font-family: var(--fonte-corpo);
             background: var(--fundo);
@@ -112,8 +119,7 @@
             position: sticky;
             top: 0;
             height: 100vh;
-            width: 264px;
-            flex-shrink: 0;
+            flex: 0 0 264px;
             background: var(--fundo-suave);
             border-right: 1px solid var(--borda);
             padding: 32px 24px;
@@ -224,14 +230,25 @@
         /* ============================================================
            HERO
            ============================================================ */
-        .hero { margin-bottom: 72px; }
+        /* O maior bloco de cor da página: sem a faixa, o topo era
+           branco puro e a paleta toda parecia esmaecida. */
+        .hero {
+            margin-bottom: 72px;
+            padding: 44px 40px 40px;
+            border: 1px solid var(--borda);
+            border-radius: var(--raio);
+            background:
+                linear-gradient(135deg, var(--acento-suave) 0%, rgba(230, 232, 255, 0.35) 45%, transparent 75%);
+        }
 
         .hero-etiqueta {
             font-family: var(--fonte-mono);
             font-size: 12px;
             letter-spacing: 2px;
             text-transform: uppercase;
-            color: var(--acento);
+            /* não usar --acento aqui: fica sobre a faixa tingida do hero
+               e cai para 3.8:1 */
+            color: var(--acento-texto);
             margin-bottom: 16px;
         }
 
@@ -318,7 +335,7 @@
             font-size: 22px;
             font-weight: 700;
             letter-spacing: -0.2px;
-            color: var(--texto);
+            color: var(--acento-texto);
             padding-bottom: 12px;
             border-bottom: 1px solid var(--borda);
             margin-bottom: 24px;
@@ -327,6 +344,7 @@
         .cartao {
             background: var(--fundo-superficie);
             border: 1px solid var(--borda);
+            border-top: 2px solid var(--acento);
             border-radius: var(--raio);
             padding: 28px;
             max-width: var(--largura-leitura);
@@ -514,15 +532,28 @@
            RESPONSIVO
            ============================================================ */
         @media (max-width: 900px) {
-            /* Empilha e devolve a rolagem para a página inteira */
+            /* Empilha: sem este passo o body em flex-row manteria a
+               barra de pé e o conteúdo ao lado, em 264px deitado. */
+            body {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
             .barra-lateral {
                 position: static;
+                flex: none;
                 height: auto;
                 width: 100%;
                 border-right: none;
                 border-bottom: 1px solid var(--borda);
                 padding: 24px;
                 overflow-y: visible;
+            }
+
+            .conteudo {
+                flex: none;
+                width: 100%;
+                padding: 36px 24px 60px;
             }
 
             .barra-lateral nav ul {
@@ -542,20 +573,26 @@
 
             .redes { margin-top: 8px; }
 
-            .conteudo { padding: 36px 24px 60px; }
-
-            .hero { margin-bottom: 48px; }
+            .hero {
+                margin-bottom: 48px;
+                padding: 28px 22px 26px;
+            }
 
             .cartao { padding: 22px; }
         }
 
         @media (max-width: 480px) {
             .conteudo { padding: 28px 18px 48px; }
+            .hero {
+                padding: 24px 18px 22px;
+                margin-bottom: 40px;
+            }
             .hero-cta .btn { width: 100%; text-align: center; }
             .contato-item { flex-direction: column; gap: 4px; }
             .contato-item .icone { text-align: left; }
         }
     </style>
+</head>
 <body>
 
     <a class="skip-link" href="#conteudo-principal">Pular para o conteúdo</a>
