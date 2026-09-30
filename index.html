@@ -5,390 +5,359 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Adriano Anthony — Engenharia de Software na Uninter, militar de Santarém (PA). Constrói ferramentas de transparência política com dados públicos do Congresso, e sites full-stack com Node.js, TypeScript e React.">
     <title>Adriano Anthony · Transparência política com dados públicos</title>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🦇%3C/text%3E%3C/svg%3E">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23eef0ff'/%3E%3Ctext x='50' y='50' dy='.35em' text-anchor='middle' font-family='Georgia,serif' font-size='58' fill='%235f6094'%3EA%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
-    <style>
-        /* 🖤 TOKENS — GRIM DARK (contraste revisado p/ WCAG AA) */
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+        <style>
+        /* ============================================================
+           TOKENS — mesma paleta pastel do perfil do GitHub, em claro
+           ============================================================ */
         :root {
-            --bg-principal: #050505;
-            --bg-elevado: #0d0d0d;
-            --menu-bg: #0a0a0a;
-            --menu-borda: #1e1e1e;
-            --link-bg: #111111;
-            --link-texto: #b8b8b8;
+            --fundo: #fbfbfd;
+            --fundo-superficie: #ffffff;
+            --fundo-suave: #f3f2f8;
+            --fundo-hover: #eeecf6;
 
-            --blood: #8b0000;
-            --blood-bright: #ff2b2b;
+            --borda: #e4e1ee;
+            --borda-forte: #d3cfe3;
 
-            --card-bg: #0d0d0d;
-            --card-sombra: rgba(139, 0, 0, 0.28);
-            --conteudo-bg: #070707;
+            /* acento: lilás dessaturado, idêntico ao #7A7BB0 do GitHub */
+            --acento: #7a7bb0;
+            --acento-forte: #5f6094;
+            --acento-suave: #eef0ff;
+            --acento-texto: #4f507d;
 
-            --texto-principal: #e6e6e6;
-            --texto-corpo: #a3a3a3;   /* elevado de #666 p/ passar contraste AA */
-            --texto-dim: #6f6f6f;      /* uso restrito: legendas/decoração, nunca corpo de texto */
+            --texto: #1e1d28;
+            --texto-corpo: #4a4859;
+            --texto-suave: #6f6d80;
 
-            --fonte-display: 'Cinzel', serif;
+            --fonte-titulo: 'Inter', 'Segoe UI', sans-serif;
             --fonte-corpo: 'Inter', 'Segoe UI', sans-serif;
             --fonte-mono: 'JetBrains Mono', monospace;
 
-            --border-radius: 14px;
-            --max-conteudo: 68ch;
+            --raio: 12px;
+            --raio-pequeno: 8px;
+            --largura-leitura: 68ch;
+            --transicao: 0.2s ease;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* ============================================================
+           RESET
+           ============================================================ */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         html {
             scroll-behavior: smooth;
+            /* Compensa a barra lateral fixa ao pular para uma seção,
+               e evita que o topo do título fique sob ela */
+            scroll-padding-top: 24px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
         }
 
         body {
-            display: flex;
             min-height: 100vh;
             font-family: var(--fonte-corpo);
-            background: var(--bg-principal);
-            color: var(--texto-principal);
-            position: relative;
+            background: var(--fundo);
+            color: var(--texto);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* ♿ Skip link */
+        a { color: var(--acento-texto); }
+
+        /* Foco visível para navegação por teclado */
+        a:focus-visible,
+        button:focus-visible {
+            outline: 2px solid var(--acento);
+            outline-offset: 3px;
+            border-radius: 3px;
+        }
+
+        /* ============================================================
+           SKIP LINK
+           ============================================================ */
         .skip-link {
             position: absolute;
-            left: -999px;
+            left: -9999px;
             top: 0;
-            background: var(--blood);
+            z-index: 100;
+            background: var(--acento);
             color: #fff;
             padding: 12px 20px;
-            z-index: 100;
-            border-radius: 0 0 8px 0;
+            border-radius: 0 0 var(--raio-pequeno) 0;
             text-decoration: none;
-            font-family: var(--fonte-corpo);
             font-weight: 600;
         }
+
         .skip-link:focus {
             left: 0;
         }
 
-        /* ♿ Foco visível consistente */
-        a:focus-visible,
-        button:focus-visible {
-            outline: 2px solid var(--blood-bright);
-            outline-offset: 3px;
-            border-radius: 4px;
-        }
-
-        /* 💀 CANVAS DAS CAVEIRINHAS — camada TRASEIRA, atrás do conteúdo */
-        #caveiraCanvas {
-            position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: auto; /* precisa captar clique/arraste nas caveiras */
-            z-index: 1; /* abaixo do menu (5) e do conteúdo (5) */
-            cursor: default;
-        }
-
-        @media (max-width: 768px) {
-            #caveiraCanvas { display: none; } /* performance + menos ruído visual no mobile */
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            #caveiraCanvas { display: none; }
-        }
-
-        /* 👻 Deixa passar cliques para o canvas nas áreas vazias do conteúdo,
-           mas mantém links e os cards ".Conteudo" clicáveis normalmente */
-        .ContainerPrincipal {
-            pointer-events: none;
-        }
-
-        .ContainerPrincipal a,
-        .ContainerPrincipal .Conteudo {
-            pointer-events: auto;
-        }
-
-        /* 📌 NAV LATERAL */
-        .MenuLateral {
-            position: relative;
-            z-index: 5;
-            width: 260px;
-            min-height: 100vh;
-            background: var(--menu-bg);
-            padding: 28px 20px;
+        /* ============================================================
+           BARRA LATERAL
+           ============================================================ */
+        .barra-lateral {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: 264px;
             flex-shrink: 0;
-            border-right: 1px solid var(--menu-borda);
+            background: var(--fundo-suave);
+            border-right: 1px solid var(--borda);
+            padding: 32px 24px;
             display: flex;
             flex-direction: column;
             gap: 28px;
+            overflow-y: auto;
         }
 
-        .perfil-mini {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 4px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--menu-borda);
-        }
+        .perfil { display: flex; flex-direction: column; gap: 4px; }
 
         .avatar {
-            width: 48px;
-            height: 48px;
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
-            background: linear-gradient(145deg, var(--blood), #2a0000);
-            border: 1px solid var(--blood-bright);
+            background: var(--acento-suave);
+            border: 1px solid var(--borda-forte);
+            color: var(--acento-texto);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-family: var(--fonte-display);
             font-weight: 700;
-            font-size: 18px;
-            color: #fff;
-            margin-bottom: 10px;
-            box-shadow: 0 0 18px rgba(255, 43, 43, 0.25);
+            font-size: 20px;
+            margin-bottom: 12px;
         }
 
         .perfil-nome {
-            font-family: var(--fonte-display);
+            font-weight: 600;
             font-size: 15px;
-            letter-spacing: 0.5px;
+            color: var(--texto);
         }
 
         .perfil-cargo {
-            font-size: 12px;
-            color: var(--texto-corpo);
+            font-size: 12.5px;
+            color: var(--texto-suave);
         }
 
-        .MenuLateral nav ul {
+        .barra-lateral nav ul {
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px;
         }
 
-        .MenuLateral a.nav-link {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 11px 16px;
-            background: var(--link-bg);
-            border-radius: 8px;
+        .barra-lateral a.nav-link {
+            display: block;
+            padding: 10px 14px;
+            border-radius: var(--raio-pequeno);
             text-decoration: none;
-            color: var(--link-texto);
-            transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
-            font-weight: 500;
-            border-left: 3px solid transparent;
+            color: var(--texto-corpo);
             font-size: 14px;
-            letter-spacing: 0.3px;
+            font-weight: 500;
+            border-left: 2px solid transparent;
+            transition: background var(--transicao), color var(--transicao), border-color var(--transicao);
         }
 
-        .MenuLateral a.nav-link:hover,
-        .MenuLateral a.nav-link[aria-current="true"] {
-            background: var(--blood);
-            color: #ffffff;
-            border-left-color: var(--blood-bright);
-            transform: translateX(6px);
-            box-shadow: 0 0 24px var(--card-sombra);
+        .barra-lateral a.nav-link:hover {
+            background: var(--fundo-hover);
+            color: var(--texto);
         }
 
-        .social-mini {
+        .barra-lateral a.nav-link[aria-current="true"] {
+            background: var(--acento-suave);
+            color: var(--acento-texto);
+            border-left-color: var(--acento);
+            font-weight: 600;
+        }
+
+        .redes {
             margin-top: auto;
             display: flex;
-            gap: 10px;
+            gap: 8px;
             padding-top: 20px;
-            border-top: 1px solid var(--menu-borda);
+            border-top: 1px solid var(--borda);
         }
 
-        .social-mini a {
+        .redes a {
             width: 38px;
             height: 38px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 8px;
-            background: var(--link-bg);
+            border-radius: var(--raio-pequeno);
+            background: var(--fundo-superficie);
+            border: 1px solid var(--borda);
             text-decoration: none;
-            font-size: 16px;
-            transition: background 0.25s ease, transform 0.25s ease;
+            font-size: 15px;
+            transition: background var(--transicao), border-color var(--transicao), transform var(--transicao);
         }
 
-        .social-mini a:hover {
-            background: var(--blood);
-            transform: translateY(-3px);
+        .redes a:hover {
+            background: var(--acento-suave);
+            border-color: var(--borda-forte);
+            transform: translateY(-2px);
         }
 
-        /* 📦 CONTEÚDO PRINCIPAL */
-        .ContainerPrincipal {
-            position: relative;
-            z-index: 5;
+        /* ============================================================
+           CONTEÚDO — a página rola, não uma div interna
+           ============================================================ */
+        .conteudo {
             flex: 1;
-            padding: 60px 40px 80px;
-            overflow-y: auto;
-            max-height: 100vh;
+            min-width: 0; /* permite encolher dentro do flex sem estourar */
+            padding: 64px 48px 88px;
         }
 
-        /* 🏛️ HERO */
-        .hero {
-            max-width: 640px;
-            margin-bottom: 70px;
-        }
+        .conteudo > * { max-width: 900px; }
 
-        .hero-eyebrow {
+        /* ============================================================
+           HERO
+           ============================================================ */
+        .hero { margin-bottom: 72px; }
+
+        .hero-etiqueta {
             font-family: var(--fonte-mono);
             font-size: 12px;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             text-transform: uppercase;
-            color: var(--blood-bright);
-            margin-bottom: 18px;
+            color: var(--acento);
+            margin-bottom: 16px;
         }
 
         .hero h1 {
-            font-family: var(--fonte-display);
-            font-size: clamp(32px, 5vw, 48px);
+            font-size: clamp(30px, 5vw, 46px);
             line-height: 1.15;
             font-weight: 700;
-            color: var(--texto-principal);
+            letter-spacing: -0.5px;
+            color: var(--texto);
         }
 
         .hero h1 span {
             display: block;
-            font-size: 0.55em;
-            color: var(--texto-corpo);
-            font-weight: 500;
-            margin-top: 6px;
+            font-size: 0.42em;
+            font-weight: 400;
+            color: var(--texto-suave);
+            margin-top: 10px;
+            letter-spacing: 0;
         }
 
         .hero-cargo {
-            margin-top: 18px;
-            font-size: 17px;
-            color: var(--blood-bright);
-            font-weight: 600;
+            margin-top: 20px;
+            font-size: 16.5px;
+            color: var(--acento-texto);
+            font-weight: 500;
         }
 
         .hero-desc {
-            margin-top: 16px;
-            font-size: 16px;
-            line-height: 1.7;
+            margin-top: 18px;
+            font-size: 16.5px;
+            line-height: 1.75;
             color: var(--texto-corpo);
-            max-width: var(--max-conteudo);
+            max-width: var(--largura-leitura);
         }
 
         .hero-cta {
-            margin-top: 28px;
+            margin-top: 30px;
             display: flex;
-            gap: 14px;
+            gap: 12px;
             flex-wrap: wrap;
         }
 
         .btn {
             display: inline-block;
-            padding: 12px 24px;
-            border-radius: 8px;
+            padding: 12px 22px;
+            border-radius: var(--raio-pequeno);
             text-decoration: none;
             font-weight: 600;
-            font-size: 14px;
-            letter-spacing: 0.3px;
-            transition: all 0.25s ease;
+            font-size: 14.5px;
+            border: 1px solid transparent;
+            transition: background var(--transicao), border-color var(--transicao), color var(--transicao);
         }
 
-        .btn-primary {
-            background: var(--blood);
+        .btn-primaria {
+            background: var(--acento);
             color: #fff;
-            border: 1px solid var(--blood);
         }
 
-        .btn-primary:hover {
-            background: var(--blood-bright);
-            border-color: var(--blood-bright);
-            box-shadow: 0 0 24px rgba(255, 43, 43, 0.35);
+        .btn-primaria:hover {
+            background: var(--acento-forte);
         }
 
-        .btn-outline {
-            background: transparent;
-            color: var(--texto-principal);
-            border: 1px solid var(--menu-borda);
+        .btn-secundaria {
+            background: var(--fundo-superficie);
+            color: var(--texto-corpo);
+            border-color: var(--borda-forte);
         }
 
-        .btn-outline:hover {
-            border-color: var(--blood-bright);
-            color: var(--blood-bright);
+        .btn-secundaria:hover {
+            background: var(--acento-suave);
+            color: var(--acento-texto);
+            border-color: var(--acento);
         }
 
-        /* 📖 SEÇÕES ("páginas do grimório") */
+        /* ============================================================
+           SEÇÕES
+           ============================================================ */
         section {
-            max-width: 820px;
-            margin-bottom: 44px;
-            scroll-margin-top: 30px;
-            opacity: 0;
-            transform: translateY(16px);
-            transition: opacity 0.6s ease, transform 0.6s ease;
-        }
-
-        section.revelado {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            section { opacity: 1; transform: none; transition: none; }
-        }
-
-        .pagina-label {
-            font-family: var(--fonte-mono);
-            font-size: 11px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--texto-dim);
-            margin-bottom: 6px;
+            margin-bottom: 52px;
+            scroll-margin-top: 28px;
         }
 
         section h2 {
-            font-family: var(--fonte-display);
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 700;
-            color: var(--blood-bright);
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            padding-bottom: 14px;
-            border-bottom: 1px solid var(--menu-borda);
-            margin-bottom: 22px;
+            letter-spacing: -0.2px;
+            color: var(--texto);
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--borda);
+            margin-bottom: 24px;
         }
 
-        .Conteudo {
-            position: relative;
-            z-index: 20; /* barreira acima do canvas das caveirinhas */
-            border: 1px solid var(--menu-borda);
-            border-radius: var(--border-radius);
-            padding: 26px;
-            background: var(--conteudo-bg);
-            box-shadow: inset 0 0 30px rgba(0,0,0,0.75);
-            max-width: var(--max-conteudo);
+        .cartao {
+            background: var(--fundo-superficie);
+            border: 1px solid var(--borda);
+            border-radius: var(--raio);
+            padding: 28px;
+            max-width: var(--largura-leitura);
         }
 
-        .Conteudo p {
+        .cartao p {
             color: var(--texto-corpo);
             line-height: 1.8;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             font-size: 16px;
         }
 
-        .Conteudo p:last-child { margin-bottom: 0; }
+        .cartao p:last-child { margin-bottom: 0; }
 
-        .Conteudo strong { color: var(--texto-principal); }
+        .cartao strong { color: var(--texto); font-weight: 600; }
 
-        /* 🏷️ CHIPS DE HABILIDADES */
-        .chip-grupo-titulo {
-            font-family: var(--fonte-mono);
+        .cartao em { color: var(--acento-texto); }
+
+        /* ============================================================
+           CHIPS DE HABILIDADE
+           ============================================================ */
+        .chip-titulo {
             font-size: 13px;
-            color: var(--texto-principal);
-            margin: 18px 0 10px;
+            font-weight: 600;
+            color: var(--texto);
+            margin: 22px 0 12px;
         }
 
-        .chip-grupo-titulo:first-child { margin-top: 0; }
+        .chip-titulo:first-child { margin-top: 0; }
 
-        .chip-grid {
+        .chip-lista {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
@@ -397,160 +366,202 @@
         .chip {
             font-family: var(--fonte-mono);
             font-size: 12.5px;
-            padding: 6px 12px;
+            padding: 5px 12px;
             border-radius: 20px;
-            background: var(--link-bg);
-            border: 1px solid var(--menu-borda);
+            background: var(--fundo-suave);
+            border: 1px solid var(--borda);
             color: var(--texto-corpo);
-            transition: border-color 0.25s ease, color 0.25s ease;
+            transition: background var(--transicao), border-color var(--transicao), color var(--transicao);
         }
 
         .chip:hover {
-            border-color: var(--blood-bright);
-            color: var(--texto-principal);
+            background: var(--acento-suave);
+            border-color: var(--borda-forte);
+            color: var(--acento-texto);
         }
 
-        /* 🗡️ PROJETOS */
-        .projeto {
-            margin-bottom: 26px;
-        }
+        /* ============================================================
+           PROJETOS
+           ============================================================ */
+        .projeto { margin-bottom: 28px; }
 
         .projeto:last-child { margin-bottom: 0; }
 
-        .projeto-cabecalho {
+        .projeto-topo {
             display: flex;
             align-items: center;
             gap: 10px;
             flex-wrap: wrap;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
-        .badge {
+        .selo {
             font-family: var(--fonte-mono);
             display: inline-block;
-            background: var(--blood);
-            color: #fff;
+            background: var(--acento-suave);
+            color: var(--acento-texto);
+            border: 1px solid var(--borda-forte);
             padding: 3px 10px;
             border-radius: 20px;
             font-size: 11px;
             font-weight: 600;
-            letter-spacing: 0.5px;
+            text-decoration: none;
+            transition: background var(--transicao), border-color var(--transicao);
+        }
+
+        .selo:hover {
+            background: var(--acento);
+            color: #fff;
+            border-color: var(--acento);
         }
 
         .projeto-titulo {
-            font-family: var(--fonte-display);
-            color: var(--texto-principal);
-            font-size: 19px;
+            font-size: 18px;
             font-weight: 700;
+            color: var(--texto);
             text-decoration: none;
-            border-bottom: 1px solid var(--blood-bright);
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
+            border-bottom: 1px solid var(--borda-forte);
+            padding-bottom: 1px;
+            transition: color var(--transicao), border-color var(--transicao);
         }
 
-        .projeto-titulo:hover { color: var(--blood-bright); }
+        .projeto-titulo:hover {
+            color: var(--acento-texto);
+            border-color: var(--acento);
+        }
 
-        .Conteudo ul {
-            color: var(--texto-corpo);
-            padding-left: 4px;
-            margin: 4px 0 0;
+        .cartao ul {
             list-style: none;
+            margin: 4px 0 0;
         }
 
-        .Conteudo li {
-            margin-bottom: 8px;
-            padding-left: 22px;
+        .cartao li {
             position: relative;
-            line-height: 1.6;
+            padding-left: 22px;
+            margin-bottom: 9px;
+            font-size: 15.5px;
+            line-height: 1.7;
+            color: var(--texto-corpo);
         }
 
-        .Conteudo li::before {
-            content: "⚔";
+        .cartao li:last-child { margin-bottom: 0; }
+
+        .cartao li::before {
+            content: "";
             position: absolute;
-            left: 0;
-            color: var(--blood-bright);
-            font-size: 12px;
+            left: 4px;
+            top: 11px;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--acento);
         }
 
-        /* 📬 CONTATO */
+        /* ============================================================
+           CONTATO
+           ============================================================ */
         .contato-item {
             display: flex;
-            align-items: center;
+            align-items: baseline;
             gap: 14px;
-            margin-bottom: 14px;
+            margin-bottom: 16px;
+            font-size: 15.5px;
         }
 
         .contato-item .icone {
-            font-size: 22px;
-            width: 34px;
-            text-align: center;
+            font-size: 17px;
+            width: 26px;
             flex-shrink: 0;
+            text-align: center;
+        }
+
+        .contato-item strong {
+            color: var(--texto);
+            font-weight: 600;
         }
 
         .contato-item a {
             color: var(--texto-corpo);
             text-decoration: none;
-            transition: color 0.25s ease;
+            border-bottom: 1px solid var(--borda-forte);
+            transition: color var(--transicao), border-color var(--transicao);
             word-break: break-word;
         }
 
-        .contato-item a:hover { color: var(--blood-bright); }
+        .contato-item a:hover {
+            color: var(--acento-texto);
+            border-color: var(--acento);
+        }
 
         .assinatura {
-            margin-top: 18px;
-            padding-top: 16px;
-            border-top: 1px solid var(--menu-borda);
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid var(--borda);
+            font-size: 15px;
+            color: var(--texto-suave);
             font-style: italic;
-            color: var(--texto-dim);
-            font-size: 14.5px;
         }
 
         footer {
-            max-width: 820px;
-            padding-top: 20px;
+            max-width: 900px;
+            padding-top: 24px;
             font-size: 12.5px;
-            color: var(--texto-dim);
+            color: var(--texto-suave);
             font-family: var(--fonte-mono);
         }
 
-        /* 📱 RESPONSIVO */
-        @media (max-width: 768px) {
-            body { flex-direction: column; }
-
-            .MenuLateral {
+        /* ============================================================
+           RESPONSIVO
+           ============================================================ */
+        @media (max-width: 900px) {
+            /* Empilha e devolve a rolagem para a página inteira */
+            .barra-lateral {
+                position: static;
+                height: auto;
                 width: 100%;
-                min-height: auto;
-                padding: 18px;
                 border-right: none;
-                border-bottom: 1px solid var(--menu-borda);
-                gap: 16px;
+                border-bottom: 1px solid var(--borda);
+                padding: 24px;
+                overflow-y: visible;
             }
 
-            .MenuLateral nav ul {
+            .barra-lateral nav ul {
                 flex-direction: row;
                 flex-wrap: wrap;
             }
 
-            .MenuLateral a.nav-link {
-                padding: 9px 12px;
+            .barra-lateral a.nav-link {
+                border-left: none;
+                border-bottom: 2px solid transparent;
             }
 
-            .social-mini { margin-top: 0; border-top: none; padding-top: 0; }
+            .barra-lateral a.nav-link[aria-current="true"] {
+                border-left: none;
+                border-bottom-color: var(--acento);
+            }
 
-            .ContainerPrincipal { padding: 32px 18px 60px; }
+            .redes { margin-top: 8px; }
 
-            .hero { margin-bottom: 44px; }
+            .conteudo { padding: 36px 24px 60px; }
+
+            .hero { margin-bottom: 48px; }
+
+            .cartao { padding: 22px; }
+        }
+
+        @media (max-width: 480px) {
+            .conteudo { padding: 28px 18px 48px; }
+            .hero-cta .btn { width: 100%; text-align: center; }
+            .contato-item { flex-direction: column; gap: 4px; }
+            .contato-item .icone { text-align: left; }
         }
     </style>
-</head>
 <body>
 
     <a class="skip-link" href="#conteudo-principal">Pular para o conteúdo</a>
-    <canvas id="caveiraCanvas" aria-hidden="true"></canvas>
 
-    <aside class="MenuLateral">
-        <div class="perfil-mini">
+    <aside class="barra-lateral">
+        <div class="perfil">
             <div class="avatar" aria-hidden="true">A</div>
             <p class="perfil-nome">Adriano Anthony</p>
             <p class="perfil-cargo">Transparência política · Full-Stack</p>
@@ -558,25 +569,24 @@
 
         <nav aria-label="Navegação principal">
             <ul>
-                <li><a href="#sobre" class="nav-link" data-section="sobre">👹 Sobre Mim</a></li>
-                <li><a href="#habilidades" class="nav-link" data-section="habilidades">💀 Habilidades</a></li>
-                <li><a href="#projetos" class="nav-link" data-section="projetos">🔥 Projetos</a></li>
-                <li><a href="#contato" class="nav-link" data-section="contato">📬 Contato</a></li>
+                <li><a href="#sobre" class="nav-link" data-section="sobre">Sobre</a></li>
+                <li><a href="#habilidades" class="nav-link" data-section="habilidades">Habilidades</a></li>
+                <li><a href="#projetos" class="nav-link" data-section="projetos">Projetos</a></li>
+                <li><a href="#contato" class="nav-link" data-section="contato">Contato</a></li>
             </ul>
         </nav>
 
-        <div class="social-mini">
-            <a href="mailto:adrianoanthonymma16@gmail.com" aria-label="Enviar e-mail">📧</a>
-            <a href="https://github.com/adrianoanthonymma16-boop" target="_blank" rel="noopener noreferrer" aria-label="Ver GitHub">🐙</a>
-            <a href="https://www.linkedin.com/in/adriano-anthony-202951358" target="_blank" rel="noopener noreferrer" aria-label="Ver LinkedIn">💼</a>
-            <a href="https://wa.me/5593981275587" target="_blank" rel="noopener noreferrer" aria-label="Chamar no WhatsApp">💬</a>
+        <div class="redes">
+            <a href="https://www.linkedin.com/in/adriano-anthony-202951358" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">in</a>
+            <a href="https://github.com/adrianoanthonymma16-boop" target="_blank" rel="noopener noreferrer" aria-label="GitHub">gh</a>
+            <a href="mailto:adrianoanthonymma16@gmail.com" aria-label="Enviar e-mail">@</a>
         </div>
     </aside>
 
-    <main class="ContainerPrincipal" id="conteudo-principal">
+    <main class="conteudo" id="conteudo-principal">
 
         <header class="hero">
-            <p class="hero-eyebrow">// Transparência política com dados públicos</p>
+            <p class="hero-etiqueta">// Transparência política com dados públicos</p>
             <h1>Adriano Anthony<span>Jesus Azulay de Araujo</span></h1>
             <p class="hero-cargo">Militar de Santarém (PA) · Engenharia de Software @ Uninter</p>
             <p class="hero-desc">
@@ -591,16 +601,15 @@
                 os padrões aparecem com os dados à vista, para quem quiser conferir.
             </p>
             <div class="hero-cta">
-                <a href="#projetos" class="btn btn-primary">Ver Projetos</a>
-                <a href="https://github.com/adrianoanthonymma16-boop" target="_blank" rel="noopener noreferrer" class="btn btn-outline">Meu GitHub</a>
-                <a href="#contato" class="btn btn-outline">Falar Comigo</a>
+                <a href="#projetos" class="btn btn-primaria">Ver projetos</a>
+                <a href="https://github.com/adrianoanthonymma16-boop" target="_blank" rel="noopener noreferrer" class="btn btn-secundaria">Meu GitHub</a>
+                <a href="#contato" class="btn btn-secundaria">Falar comigo</a>
             </div>
         </header>
 
         <section id="sobre" aria-labelledby="sobre-titulo">
-            <p class="pagina-label">Página I</p>
-            <h2 id="sobre-titulo">Sobre Mim</h2>
-            <div class="Conteudo">
+            <h2 id="sobre-titulo">Sobre</h2>
+            <div class="cartao">
                 <p>
                     Sou <strong>Adriano Anthony Jesus Azulay de Araujo</strong>, militar de
                     <strong>Santarém, Pará</strong>, cursando <strong>Engenharia de Software</strong>
@@ -624,11 +633,10 @@
         </section>
 
         <section id="habilidades" aria-labelledby="habilidades-titulo">
-            <p class="pagina-label">Página II</p>
             <h2 id="habilidades-titulo">Habilidades</h2>
-            <div class="Conteudo">
-                <p class="chip-grupo-titulo">⚡ Usado em produção</p>
-                <div class="chip-grid">
+            <div class="cartao">
+                <p class="chip-titulo">Usado em produção</p>
+                <div class="chip-lista">
                     <span class="chip">TypeScript</span>
                     <span class="chip">Node.js</span>
                     <span class="chip">React</span>
@@ -642,8 +650,8 @@
                     <span class="chip">Zod</span>
                 </div>
 
-                <p class="chip-grupo-titulo">🧪 Testes e qualidade</p>
-                <div class="chip-grid">
+                <p class="chip-titulo">Testes e qualidade</p>
+                <div class="chip-lista">
                     <span class="chip">Jest</span>
                     <span class="chip">Playwright</span>
                     <span class="chip">pytest</span>
@@ -652,8 +660,8 @@
                     <span class="chip">Acessibilidade WCAG AA</span>
                 </div>
 
-                <p class="chip-grupo-titulo">🛠️ Ferramentas e infraestrutura</p>
-                <div class="chip-grid">
+                <p class="chip-titulo">Ferramentas e infraestrutura</p>
+                <div class="chip-lista">
                     <span class="chip">Git</span>
                     <span class="chip">GitHub</span>
                     <span class="chip">GitHub Actions</span>
@@ -665,8 +673,8 @@
                     <span class="chip">Pino</span>
                 </div>
 
-                <p class="chip-grupo-titulo">📚 Também trabalho com</p>
-                <div class="chip-grid">
+                <p class="chip-titulo">Também trabalho com</p>
+                <div class="chip-lista">
                     <span class="chip">C# 12</span>
                     <span class="chip">.NET 8</span>
                     <span class="chip">Blazor Server</span>
@@ -678,14 +686,12 @@
         </section>
 
         <section id="projetos" aria-labelledby="projetos-titulo">
-            <p class="pagina-label">Página III</p>
             <h2 id="projetos-titulo">Projetos</h2>
-            <div class="Conteudo">
+            <div class="cartao">
                 <div class="projeto">
-                    <div class="projeto-cabecalho">
-                        <span class="badge">no ar</span>
+                    <div class="projeto-topo">
+                        <a href="https://como-votei.vercel.app" target="_blank" rel="noopener noreferrer" class="selo">ver no ar</a>
                         <a href="https://github.com/adrianoanthonymma16-boop/como-votei" target="_blank" rel="noopener noreferrer" class="projeto-titulo">Como Votei</a>
-                        <a href="https://como-votei.vercel.app" target="_blank" rel="noopener noreferrer" class="badge">demo ↗</a>
                     </div>
                     <ul>
                         <li>Transparência legislativa: como deputados e senadores votam, falam e aprovam no Congresso</li>
@@ -698,8 +704,8 @@
                 </div>
 
                 <div class="projeto">
-                    <div class="projeto-cabecalho">
-                        <span class="badge">117 skills</span>
+                    <div class="projeto-topo">
+                        <span class="selo">117 skills</span>
                         <a href="https://github.com/adrianoanthonymma16-boop/opencode-agents" target="_blank" rel="noopener noreferrer" class="projeto-titulo">opencode-agents</a>
                     </div>
                     <ul>
@@ -711,8 +717,8 @@
                 </div>
 
                 <div class="projeto">
-                    <div class="projeto-cabecalho">
-                        <span class="badge">v4.0 · MIT</span>
+                    <div class="projeto-topo">
+                        <span class="selo">v4.0 · MIT</span>
                         <a href="https://github.com/adrianoanthonymma16-boop/autodoc" target="_blank" rel="noopener noreferrer" class="projeto-titulo">AutoDoc</a>
                     </div>
                     <ul>
@@ -725,8 +731,8 @@
                 </div>
 
                 <div class="projeto">
-                    <div class="projeto-cabecalho">
-                        <span class="badge">migração</span>
+                    <div class="projeto-topo">
+                        <span class="selo">migração</span>
                         <a href="https://github.com/adrianoanthonymma16-boop/taskflow-csharp" target="_blank" rel="noopener noreferrer" class="projeto-titulo">TaskFlow C#</a>
                     </div>
                     <ul>
@@ -737,8 +743,8 @@
                 </div>
 
                 <div class="projeto">
-                    <div class="projeto-cabecalho">
-                        <span class="badge">validação no setter</span>
+                    <div class="projeto-topo">
+                        <span class="selo">validação no setter</span>
                         <a href="https://github.com/adrianoanthonymma16-boop/sistema-hotelaria-dio" target="_blank" rel="noopener noreferrer" class="projeto-titulo">Sistema de Hotelaria</a>
                     </div>
                     <ul>
@@ -751,355 +757,92 @@
         </section>
 
         <section id="contato" aria-labelledby="contato-titulo">
-            <p class="pagina-label">Página IV</p>
             <h2 id="contato-titulo">Contato</h2>
-            <div class="Conteudo">
+            <div class="cartao">
                 <div class="contato-item">
-                    <span class="icone" aria-hidden="true">💼</span>
+                    <span class="icone" aria-hidden="true">in</span>
                     <span><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/adriano-anthony-202951358" target="_blank" rel="noopener noreferrer">in/adriano-anthony-202951358</a></span>
                 </div>
                 <div class="contato-item">
-                    <span class="icone" aria-hidden="true">📧</span>
+                    <span class="icone" aria-hidden="true">@</span>
                     <span><strong>E-mail:</strong> <a href="mailto:adrianoanthonymma16@gmail.com">adrianoanthonymma16@gmail.com</a></span>
                 </div>
                 <div class="contato-item">
-                    <span class="icone" aria-hidden="true">🐙</span>
+                    <span class="icone" aria-hidden="true">gh</span>
                     <span><strong>GitHub:</strong> <a href="https://github.com/adrianoanthonymma16-boop" target="_blank" rel="noopener noreferrer">github.com/adrianoanthonymma16-boop</a></span>
                 </div>
                 <div class="contato-item">
-                    <span class="icone" aria-hidden="true">📱</span>
+                    <span class="icone" aria-hidden="true">wa</span>
                     <span><strong>WhatsApp:</strong> <a href="https://wa.me/5593981275587" target="_blank" rel="noopener noreferrer">(93) 98127-5587</a></span>
                 </div>
                 <div class="contato-item">
-                    <span class="icone" aria-hidden="true">📍</span>
+                    <span class="icone" aria-hidden="true">◎</span>
                     <span><strong>Onde estou:</strong> Santarém — PA, disponível para trabalho remoto</span>
                 </div>
                 <p class="assinatura">
-                    💀 "Disponível para estágio, projetos e colaborações — um bom proxy de dados
-                    público                     e uma stack inteira de discussão valem mais que um oi."
+                    Disponível para estágio, projetos e colaborações — um bom problema de dados
+                    públicos e uma stack inteira de discussão valem mais que um oi.
                 </p>
             </div>
         </section>
 
-        <footer>© 2026 Adriano Anthony — construído com HTML, CSS e um pouco de sangue.</footer>
+        <footer>© 2026 Adriano Anthony · HTML, CSS e JavaScript, sem framework e sem build.</footer>
     </main>
 
     <script>
         (function () {
+            'use strict';
+
             const reduzirMovimento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-            /* 👁️ Revelar seções ao rolar */
+            /* Sem animação de revelação: num tema claro e sóbrio ela vira
+               só atraso percebido, principalmente na primeira rolagem.
+               O que fica é o scrollspy, que é funcional. */
             const secoes = document.querySelectorAll('section');
-            if ('IntersectionObserver' in window) {
-                const observer = new IntersectionObserver((entradas) => {
-                    entradas.forEach((entrada) => {
-                        if (entrada.isIntersecting) {
-                            entrada.target.classList.add('revelado');
-                            observer.unobserve(entrada.target);
-                        }
-                    });
-                }, { threshold: 0.15 });
-                secoes.forEach((s) => observer.observe(s));
-            } else {
-                secoes.forEach((s) => s.classList.add('revelado'));
-            }
 
-            /* 🧭 Link ativo no menu conforme a seção visível */
-            const links = document.querySelectorAll('.nav-link');
-            if ('IntersectionObserver' in window) {
-                const navObserver = new IntersectionObserver((entradas) => {
-                    entradas.forEach((entrada) => {
-                        const link = document.querySelector(`.nav-link[data-section="${entrada.target.id}"]`);
-                        if (!link) return;
-                        if (entrada.isIntersecting) {
-                            links.forEach((l) => l.removeAttribute('aria-current'));
+            /* Marcar o link da seção visível. O rootMargin cria uma faixa
+               no meio da viewport: só a seção que cruza essa faixa fica
+               ativa, evitando que duas acendem ao mesmo tempo. */
+            const links = Array.from(document.querySelectorAll('.nav-link[data-section]'));
+            if (links.length) {
+                const ativar = (id) => {
+                    links.forEach((link) => {
+                        if (link.dataset.section === id) {
                             link.setAttribute('aria-current', 'true');
+                        } else {
+                            link.removeAttribute('aria-current');
                         }
                     });
-                }, { rootMargin: '-40% 0px -50% 0px' });
-                secoes.forEach((s) => navObserver.observe(s));
-            }
+                };
 
-            /* 💀 Caveirinhas — desativadas se o usuário prefere menos movimento
-               ou se o canvas estiver oculto (mobile) */
-            const canvas = document.getElementById('caveiraCanvas');
-            if (reduzirMovimento || getComputedStyle(canvas).display === 'none') {
-                return;
-            }
-
-            const ctx = canvas.getContext('2d');
-            const caveiras = [];
-            const NUM_CAVEIRAS = 8;
-            const MAX_SPEED = 1.4;
-            let rodando = true;
-
-            function resizeCanvas() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
-            window.addEventListener('resize', resizeCanvas);
-            resizeCanvas();
-
-            function getObstaculos() {
-                const obstaculos = [];
-                document.querySelectorAll('.Conteudo').forEach((el) => {
-                    const rect = el.getBoundingClientRect();
-                    obstaculos.push({
-                        x: rect.left,
-                        y: rect.top,
-                        width: rect.width,
-                        height: rect.height,
-                        padding: 10
-                    });
-                });
-                return obstaculos;
-            }
-
-            class Caveira {
-                constructor() {
-                    this.size = 20 + Math.random() * 14;
-                    this.x = Math.random() * canvas.width;
-                    this.y = Math.random() * canvas.height;
-                    this.speed = 0.5 + Math.random() * 0.7;
-                    const angle = Math.random() * Math.PI * 2;
-                    this.vx = Math.cos(angle) * this.speed;
-                    this.vy = Math.sin(angle) * this.speed;
-                    this.bobAngle = Math.random() * Math.PI * 2;
-                    this.bobSpeed = 0.02 + Math.random() * 0.02;
-                    this.spinAngle = Math.random() * Math.PI * 2;
-                    this.spinSpeed = (Math.random() - 0.5) * 0.01;
-                    this.isDragging = false;
-                }
-
-                update(obstaculos) {
-                    if (this.isDragging) {
-                        // enquanto arrasta, só mantém a animação de flutuação — sem física
-                        this.bobAngle += this.bobSpeed;
-                        this.spinAngle += this.spinSpeed;
-                        return;
-                    }
-                    this.x += this.vx;
-                    this.y += this.vy;
-                    this.bobAngle += this.bobSpeed;
-                    this.spinAngle += this.spinSpeed;
-
-                    const margin = 30;
-                    if (this.x < margin) { this.x = margin; this.vx *= -1; }
-                    else if (this.x > canvas.width - margin) { this.x = canvas.width - margin; this.vx *= -1; }
-                    if (this.y < margin) { this.y = margin; this.vy *= -1; }
-                    else if (this.y > canvas.height - margin) { this.y = canvas.height - margin; this.vy *= -1; }
-
-                    for (const obs of obstaculos) {
-                        const pad = obs.padding || 10;
-                        const ox = obs.x - pad;
-                        const oy = obs.y - pad;
-                        const ow = obs.width + pad * 2;
-                        const oh = obs.height + pad * 2;
-
-                        if (this.x > ox && this.x < ox + ow && this.y > oy && this.y < oy + oh) {
-                            const cx = ox + ow / 2;
-                            const cy = oy + oh / 2;
-                            const dx = this.x - cx;
-                            const dy = this.y - cy;
-                            const dist = Math.sqrt(dx * dx + dy * dy);
-
-                            if (dist > 0.1) {
-                                const force = 0.8;
-                                this.x += (dx / dist) * force;
-                                this.y += (dy / dist) * force;
-                                const dot = this.vx * (dx / dist) + this.vy * (dy / dist);
-                                if (dot < 0) {
-                                    this.vx -= 2 * dot * (dx / dist);
-                                    this.vy -= 2 * dot * (dy / dist);
-                                }
-                            } else {
-                                this.x = ox + ow + 20;
-                                this.vx = Math.abs(this.vx);
-                            }
-
-                            const currentSpeed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-                            if (currentSpeed > MAX_SPEED) {
-                                this.vx = (this.vx / currentSpeed) * MAX_SPEED;
-                                this.vy = (this.vy / currentSpeed) * MAX_SPEED;
-                            }
-                        }
-                    }
-
-                    if (Math.random() < 0.02) {
-                        this.vx += (Math.random() - 0.5) * 0.2;
-                        this.vy += (Math.random() - 0.5) * 0.2;
-                    }
-
-                    const currentSpeed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
-                    if (currentSpeed > MAX_SPEED) {
-                        this.vx = (this.vx / currentSpeed) * MAX_SPEED;
-                        this.vy = (this.vy / currentSpeed) * MAX_SPEED;
-                    }
-                }
-
-                draw(ctx) {
-                    const bob = Math.sin(this.bobAngle) * 4; // flutuação vertical suave
-
-                    ctx.save();
-                    ctx.globalAlpha = 0.85; /* +15% de transparência */
-                    ctx.translate(this.x, this.y + bob);
-                    ctx.rotate(Math.sin(this.spinAngle) * 0.15); // leve balanço, sem "virar de cabeça pra baixo"
-
-                    const s = this.size / 25;
-
-                    ctx.shadowColor = 'rgba(139, 0, 0, 0.2)';
-                    ctx.shadowBlur = 12;
-
-                    /* crânio */
-                    ctx.beginPath();
-                    ctx.ellipse(0, -2 * s, 9 * s, 8 * s, 0, 0, Math.PI * 2);
-                    ctx.fillStyle = '#d8d3c4';
-                    ctx.fill();
-                    ctx.strokeStyle = '#4a4638';
-                    ctx.lineWidth = 0.6;
-                    ctx.stroke();
-
-                    /* mandíbula */
-                    ctx.beginPath();
-                    ctx.moveTo(-5.5 * s, 3 * s);
-                    ctx.lineTo(5.5 * s, 3 * s);
-                    ctx.lineTo(4 * s, 7.5 * s);
-                    ctx.lineTo(-4 * s, 7.5 * s);
-                    ctx.closePath();
-                    ctx.fillStyle = '#c9c3b0';
-                    ctx.fill();
-                    ctx.strokeStyle = '#4a4638';
-                    ctx.lineWidth = 0.6;
-                    ctx.stroke();
-
-                    /* dentes */
-                    ctx.strokeStyle = '#4a4638';
-                    ctx.lineWidth = 0.5;
-                    for (let dx = -3.5; dx <= 3.5; dx += 1.75) {
-                        ctx.beginPath();
-                        ctx.moveTo(dx * s, 4 * s);
-                        ctx.lineTo(dx * s, 7 * s);
-                        ctx.stroke();
-                    }
-
-                    /* cavidade nasal */
-                    ctx.beginPath();
-                    ctx.moveTo(0, -1 * s);
-                    ctx.lineTo(-1.4 * s, 2 * s);
-                    ctx.lineTo(1.4 * s, 2 * s);
-                    ctx.closePath();
-                    ctx.fillStyle = '#1a1512';
-                    ctx.fill();
-
-                    /* órbitas oculares com brilho vermelho */
-                    ctx.shadowBlur = 6;
-                    ctx.shadowColor = 'rgba(255, 0, 0, 0.55)';
-                    ctx.beginPath();
-                    ctx.ellipse(-3.4 * s, -2 * s, 2.3 * s, 2.8 * s, 0, 0, Math.PI * 2);
-                    ctx.fillStyle = '#0d0d0d';
-                    ctx.fill();
-                    ctx.beginPath();
-                    ctx.ellipse(3.4 * s, -2 * s, 2.3 * s, 2.8 * s, 0, 0, Math.PI * 2);
-                    ctx.fillStyle = '#0d0d0d';
-                    ctx.fill();
-
-                    ctx.beginPath();
-                    ctx.arc(-3.4 * s, -2 * s, 0.9 * s, 0, Math.PI * 2);
-                    ctx.fillStyle = '#ff2b2b';
-                    ctx.fill();
-                    ctx.beginPath();
-                    ctx.arc(3.4 * s, -2 * s, 0.9 * s, 0, Math.PI * 2);
-                    ctx.fillStyle = '#ff2b2b';
-                    ctx.fill();
-
-                    ctx.restore();
-                }
-            }
-
-            for (let i = 0; i < NUM_CAVEIRAS; i++) caveiras.push(new Caveira());
-
-            /* 🖱️ Clicar e arrastar as caveirinhas */
-            let caveiraArrastada = null;
-            let offsetX = 0;
-            let offsetY = 0;
-
-            function posicaoDoMouse(evt) {
-                const rect = canvas.getBoundingClientRect();
-                return { x: evt.clientX - rect.left, y: evt.clientY - rect.top };
-            }
-
-            function caveiraSobPonto(pos) {
-                for (let i = caveiras.length - 1; i >= 0; i--) {
-                    const c = caveiras[i];
-                    const raio = c.size * 0.6;
-                    const dx = pos.x - c.x;
-                    const dy = pos.y - c.y;
-                    if (Math.sqrt(dx * dx + dy * dy) <= raio) return c;
-                }
-                return null;
-            }
-
-            canvas.addEventListener('mousedown', (evt) => {
-                const pos = posicaoDoMouse(evt);
-                const alvo = caveiraSobPonto(pos);
-                if (alvo) {
-                    caveiraArrastada = alvo;
-                    caveiraArrastada.isDragging = true;
-                    offsetX = alvo.x - pos.x;
-                    offsetY = alvo.y - pos.y;
-                    canvas.style.cursor = 'grabbing';
-                    evt.preventDefault();
-                }
-            });
-
-            window.addEventListener('mousemove', (evt) => {
-                const pos = posicaoDoMouse(evt);
-                if (caveiraArrastada) {
-                    const novoX = pos.x + offsetX;
-                    const novoY = pos.y + offsetY;
-                    caveiraArrastada.vx = novoX - caveiraArrastada.x;
-                    caveiraArrastada.vy = novoY - caveiraArrastada.y;
-                    caveiraArrastada.x = novoX;
-                    caveiraArrastada.y = novoY;
+                if (reduzirMovimento || !('IntersectionObserver' in window)) {
+                    ativar(links[0].dataset.section);
                 } else {
-                    canvas.style.cursor = caveiraSobPonto(pos) ? 'grab' : 'default';
+                    const navObserver = new IntersectionObserver((entradas) => {
+                        const visivel = entradas
+                            .filter((e) => e.isIntersecting)
+                            .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+                        if (visivel.length) ativar(visivel[0].target.id);
+                    }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+                    secoes.forEach((s) => navObserver.observe(s));
                 }
-            });
-
-            function soltarCaveira() {
-                if (!caveiraArrastada) return;
-                const vel = Math.sqrt(caveiraArrastada.vx ** 2 + caveiraArrastada.vy ** 2);
-                const velMax = MAX_SPEED * 2.5;
-                if (vel > velMax) {
-                    caveiraArrastada.vx = (caveiraArrastada.vx / vel) * velMax;
-                    caveiraArrastada.vy = (caveiraArrastada.vy / vel) * velMax;
-                }
-                caveiraArrastada.isDragging = false;
-                caveiraArrastada = null;
-                canvas.style.cursor = 'default';
             }
 
-            window.addEventListener('mouseup', soltarCaveira);
-            window.addEventListener('mouseleave', soltarCaveira);
-
-            function animate() {
-                if (!rodando) return;
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                const obstaculos = getObstaculos();
-                for (const caveira of caveiras) {
-                    caveira.update(obstaculos);
-                    caveira.draw(ctx);
-                }
-                requestAnimationFrame(animate);
-            }
-
-            /* ⏸️ Pausa quando a aba não está visível — economiza CPU/bateria */
-            document.addEventListener('visibilitychange', () => {
-                rodando = !document.hidden;
-                if (rodando) animate();
+            /* Clicar em um link de navegação que já está no ar costuma
+               falhar quando o alvo está no topo: o navegador não tem
+               o que rolar e o clique parece não funcionar. */
+            links.forEach((link) => {
+                link.addEventListener('click', (evt) => {
+                    const alvo = document.getElementById(link.dataset.section);
+                    if (!alvo) return;
+                    evt.preventDefault();
+                    alvo.scrollIntoView({
+                        behavior: reduzirMovimento ? 'auto' : 'smooth',
+                        block: 'start'
+                    });
+                    history.replaceState(null, '', '#' + link.dataset.section);
+                });
             });
-
-            animate();
         })();
     </script>
 
